@@ -158,3 +158,46 @@ function tt_child_get_news_tiitle_book() {
 
 add_shortcode( 'tt_child_get_news_tiitle_book', 'tt_child_get_news_tiitle_book' );
 
+/**
+ * Add Shortcode Get 5 posts with selected category 
+ */
+
+function tt_child_get_recent_posts_function($atts){
+    extract(shortcode_atts(array(
+       'posts' => 5,
+       'category_id' => null
+    ), $atts));
+
+    $args = array(
+        'post_type' => 'library',
+        'order' => 'ASC',
+        'orderby' => 'title',
+        'showposts' => $posts
+    );
+    
+
+    if ( null != $category_id ) {
+        $args['tax_query'] = array(
+            array(
+                'taxonomy' => 'book-genre',
+                'field' => 'term_id',
+                'terms' => $category_id
+            )
+        );
+    }
+
+    query_posts( $args );
+    $return_string = '';
+    if (have_posts()) :
+        $return_string .= '<div class="books">';
+            $return_string .= "<ul>";
+            while (have_posts()) : the_post();
+                $return_string .= '<li><a href="'.get_permalink().'">'.get_the_title().'</a></li>';
+            endwhile;
+            $return_string .= "</ul>";
+        $return_string .= '</div>';
+     endif;
+
+    return $return_string;
+ }
+ add_shortcode( 'tt_child_get_recent_posts', 'tt_child_get_recent_posts_function' );
