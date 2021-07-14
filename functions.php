@@ -58,7 +58,7 @@ if ( ! function_exists('tt_child_custom_post') ) {
         $args = array(
             'label'                 => __( 'Book', 'text_domain' ),
             'labels'                => $labels,
-            'supports'              => array( 'title', 'editor', 'post-formats' ),
+            'supports'              => array( 'title', 'post-formats', 'thumbnail' ),
             'hierarchical'          => false,
             'public'                => true,
             'show_ui'               => true,
@@ -114,7 +114,7 @@ if ( ! function_exists( 'tt_child_taxonomy' ) ) {
         );
         $args = array(
             'labels'                     => $labels,
-            'hierarchical'               => false,
+            'hierarchical'               => true,
             'public'                     => true,
             'show_ui'                    => true,
             'show_admin_column'          => true,
