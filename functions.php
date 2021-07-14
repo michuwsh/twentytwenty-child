@@ -127,3 +127,34 @@ if ( ! function_exists( 'tt_child_taxonomy' ) ) {
     add_action( 'init', 'tt_child_taxonomy', 0 );
     
 }
+
+/**
+ * Add Shortcode Get News title book
+ */
+
+function tt_child_get_news_tiitle_book() {
+    $args = array(
+        'post_type' => 'library',
+        'posts_per_page' => 1,
+        'order'   => 'DESC'
+
+    );
+
+    $query = new WP_Query( $args );
+
+    // echo "<pre>";
+    // print_r($query );
+    $title = '';
+    if( 0 < count($query->posts) ) {
+        $title .= '<div class="news-title">';
+            $title .= '<h3>News book</h3>';
+            $title .= '<a href="' . get_permalink($query->posts[0]->ID) . '">' . $query->posts[0]->post_title . '</a>';
+        $title .= '</div>';
+    }
+
+    return $title;
+
+}
+
+add_shortcode( 'tt_child_get_news_tiitle_book', 'tt_child_get_news_tiitle_book' );
+
