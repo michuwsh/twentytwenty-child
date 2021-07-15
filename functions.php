@@ -201,3 +201,33 @@ function tt_child_get_recent_posts_function($atts){
     return $return_string;
  }
  add_shortcode( 'tt_child_get_recent_posts', 'tt_child_get_recent_posts_function' );
+
+ /**
+  * Ajax callback 20 posts
+  */
+
+function tt_child_get_posts() {
+    query_posts(array(
+      'post_type' => 'library',
+      'showposts' => 20
+    ));
+
+    $array = [];
+    if (have_posts()) :
+        while (have_posts()) : the_post();
+            $array[] = array(
+                'name' => get_the_title(),
+                'genry' => get_the_terms(get_the_ID(), 'book-genre')[0]->name,
+                'data' => get_the_date(),
+                'excerpt' => the_excerpt()
+            );
+        endwhile;
+    endif;
+     
+    echo json_encode($array, JSON_FORCE_OBJECT);
+
+    die;
+}
+
+  add_action('wp_ajax_nopriv_tt_child_get_posts', 'tt_child_get_posts');
+  add_action('wp_ajax_tt_child_get_posts', 'tt_child_get_posts');
