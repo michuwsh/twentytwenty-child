@@ -1,6 +1,6 @@
 <?php
 /**
- * The default template for displaying content
+ * The default template for displaying content book
  *
  * Used for both singular and index.
  *

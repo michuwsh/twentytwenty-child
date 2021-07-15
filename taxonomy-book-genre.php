@@ -1,12 +1,12 @@
 <?php
 /**
- * The template for displaying single posts and pages.
+ * The template for displaying taxonomy books
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
  * @package WordPress
  * @subpackage Twenty_Twenty
- * @since Twenty Twenty 1.0
+ * @since Twenty Twenty Child 1.0
  */
 
 get_header();

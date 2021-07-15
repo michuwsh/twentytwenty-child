@@ -58,7 +58,7 @@ if ( ! function_exists('tt_child_custom_post') ) {
         $args = array(
             'label'                 => __( 'Book', 'text_domain' ),
             'labels'                => $labels,
-            'supports'              => array( 'title', 'post-formats', 'thumbnail' ),
+            'supports'              => array( 'title', 'post-formats', 'thumbnail', 'excerpt' ),
             'hierarchical'          => false,
             'public'                => true,
             'show_ui'               => true,
@@ -87,7 +87,6 @@ if ( ! function_exists('tt_child_custom_post') ) {
 
 if ( ! function_exists( 'tt_child_taxonomy' ) ) {
 
-    // Register Custom Taxonomy
     function tt_child_taxonomy() {
     
         $labels = array(
@@ -133,24 +132,22 @@ if ( ! function_exists( 'tt_child_taxonomy' ) ) {
  */
 
 function tt_child_get_news_tiitle_book() {
-    $args = array(
-        'post_type' => 'library',
-        'posts_per_page' => 1,
-        'order'   => 'DESC'
-
+    query_posts(
+        array(
+            'post_type' => 'library',
+            'posts_per_page' => 1,
+            'order'   => 'DESC'
+        )
     );
 
-    $query = new WP_Query( $args );
-
-    // echo "<pre>";
-    // print_r($query );
-    $title = '';
-    if( 0 < count($query->posts) ) {
-        $title .= '<div class="news-title">';
-            $title .= '<h3>News book</h3>';
-            $title .= '<a href="' . get_permalink($query->posts[0]->ID) . '">' . $query->posts[0]->post_title . '</a>';
-        $title .= '</div>';
-    }
+    if (have_posts()) :
+        while (have_posts()) : the_post();
+            $title .= '<div class="news-title">';
+                $title .= '<h3>' . __( 'New Book', 'text_domain' ) .' </h3>';
+                $title .= '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
+            $title .= '</div>';
+        endwhile;
+    endif;
 
     return $title;
 
@@ -187,7 +184,9 @@ function tt_child_get_recent_posts_function($atts){
     }
 
     query_posts( $args );
+
     $return_string = '';
+
     if (have_posts()) :
         $return_string .= '<div class="books">';
             $return_string .= "<ul>";
@@ -196,15 +195,16 @@ function tt_child_get_recent_posts_function($atts){
             endwhile;
             $return_string .= "</ul>";
         $return_string .= '</div>';
-     endif;
+    endif;
 
     return $return_string;
- }
- add_shortcode( 'tt_child_get_recent_posts', 'tt_child_get_recent_posts_function' );
+}
 
- /**
-  * Ajax callback 20 posts
-  */
+add_shortcode( 'tt_child_get_recent_posts', 'tt_child_get_recent_posts_function' );
+
+/**
+* Ajax callback 20 posts
+*/
 
 function tt_child_get_posts() {
     query_posts(array(
@@ -219,7 +219,7 @@ function tt_child_get_posts() {
                 'name' => get_the_title(),
                 'genry' => get_the_terms(get_the_ID(), 'book-genre')[0]->name,
                 'data' => get_the_date(),
-                'excerpt' => the_excerpt()
+                'excerpt' => get_the_excerpt()
             );
         endwhile;
     endif;
@@ -229,5 +229,5 @@ function tt_child_get_posts() {
     die;
 }
 
-  add_action('wp_ajax_nopriv_tt_child_get_posts', 'tt_child_get_posts');
-  add_action('wp_ajax_tt_child_get_posts', 'tt_child_get_posts');
+add_action('wp_ajax_nopriv_tt_child_get_posts', 'tt_child_get_posts');
+add_action('wp_ajax_tt_child_get_posts', 'tt_child_get_posts');
